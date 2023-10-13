@@ -1,0 +1,50 @@
+---
+title: "Bioinformatic analysis"
+author: "Rodrigo Aguilar"
+date: "2023-10-05"
+output: pdf_document
+---
+
+Woman affected by a rare disease, she has one brother and a sister healthy; their parents also are healthy.
+
+```{r}
+setwd("~/Downloads/Claudia")
+
+F10 <- read.csv("FAM10.csv", sep = ",", header = T)
+
+# 22679 variants with 52 variants.
+```
+
+## Data:
+
+- TR: coverage greater than 10
+
+- GQ: Quality greater than 30
+
+- RATIO: Alellic balance grater than 0.20
+
+- ANNOTATION: no synonymous SNV
+
+- EVE_ALT_FREQ: frequency less than 0.01
+
+```{r}
+F10_s <- subset(F10, TR >= 10 & GQ >= 30 & RATIO >= 0.20 & ANNOTATION != "synonymous SNV" &  EVE_ALT_FREQ <= 0.01)
+```
+
+
+
+### Filtering:
+
+### 1. Recesive disease
+
+If it is a recesive trait then, the patient is homozygous, both parents are heterozygous, and the brothers can have any genotype but no homozygous
+
+```{r}
+hz <- subset(F10_s, Proband.ZYG == "Proband:hom" & Mother.ZYG == "Mother:het" & Father.ZYG == "Father:het" & UASib.ZYG != "UASib:hom" & UASib.ZYG.1 != "UASib:hom") 
+```
+
+List of candidates:
+
+```{r}
+hz
+```
